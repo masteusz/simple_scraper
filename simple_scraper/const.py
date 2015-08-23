@@ -10,3 +10,6 @@ LOGGER_NAME = "simple_scraper"
 # Output
 OUT_DIRECTORY = "out/"
 MARKDOWN_FILENAME = OUT_DIRECTORY + "pagemap.md"
+
+# Unwanted links to follow
+UNWANTED = (".pdf", ".doc", ".png", ".jpg", ".rvb", ".gh")

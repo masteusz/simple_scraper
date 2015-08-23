@@ -394,8 +394,6 @@
 * http://lcamtuf.coredump.cx/gcnc/./
 * http://lcamtuf.coredump.cx/gcnc/ch7/
 * http://lcamtuf.coredump.cx/gcnc/cycloid/
-* http://lcamtuf.coredump.cx/gcnc/gear_calc.gh
-* http://lcamtuf.coredump.cx/gcnc/hob_calc4.rvb
 * http://lcamtuf.coredump.cx/gcnc/omni2/
 * http://lcamtuf.coredump.cx/gcnc/tinybot/
 * http://spectrum.ieee.org/automaton/robotics/robotics-software/042910-a-robot-that-balances-on-a-ball
@@ -524,8 +522,6 @@
 * http://lcamtuf.coredump.cx/gcnc/cycloid/
 * http://lcamtuf.coredump.cx/gcnc/edison_fuzz/
 * http://lcamtuf.coredump.cx/gcnc/electronics/
-* http://lcamtuf.coredump.cx/gcnc/gear_calc.gh
-* http://lcamtuf.coredump.cx/gcnc/hob_calc4.rvb
 * http://lcamtuf.coredump.cx/gcnc/omni2/
 * http://lcamtuf.coredump.cx/gcnc/rstory/
 * http://lcamtuf.coredump.cx/gcnc/tinybot/
@@ -827,3 +823,25 @@
 * exotherm-ptsa.jpg
 * intro-omnibot.jpg
 * intro-planetary.jpg
+
+## http://lcamtuf.coredump.cx/gcnc/omni2/
+### Links:
+
+
+### Images:
+
+
+## http://lcamtuf.coredump.cx/gcnc/rstory/
+### Links:
+
+
+### Images:
+
+
+## http://lcamtuf.coredump.cx/gcnc/tinybot/
+### Links:
+
+
+### Images:
+
+

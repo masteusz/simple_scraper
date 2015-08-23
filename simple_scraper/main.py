@@ -83,10 +83,13 @@ def clean_link(link):
         return None
     if "mailto" in link:  # Omit maillinks
         return None
-    if ".pdf" in link or ".doc" in link or ".jpg" in link:  # TODO: Delete
-        return None
     if "#" in link:  # Omit tag links
         return None
+
+    for ext in const.UNWANTED:
+        if ext in link:
+            return None
+
     if "http://" in link or "https://" in link:
         return link
     else:
