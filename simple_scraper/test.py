@@ -1,0 +1,1 @@
+# pgmap = {"test": {"images": ["bla", "frist!", unichr(40960) + u'abcd' + unichr(1972)], "links": ["whatever", "second", "aaa"]}}

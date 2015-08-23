@@ -83,15 +83,15 @@ def clean_link(link):
         return None
     if "mailto" in link:  # Omit maillinks
         return None
-    if ".pdf" in link or ".doc" in link: # TODO: Delete
+    if ".pdf" in link or ".doc" in link or ".jpg" in link:  # TODO: Delete
         return None
     if "#" in link:  # Omit tag links
         return None
     if "http://" in link or "https://" in link:
         return link
     else:
-        if not link.startswith("/"):
-            return const.STARTING_PAGE + "/" + link
+        if link.startswith("/"):
+            return const.STARTING_PAGE + link.lstrip("/")
         return const.STARTING_PAGE + link
 
 
@@ -120,22 +120,27 @@ def crawl():
             e = sys.exc_info()[0]
             logger.error("Error while retrieving page %r: %r", current_link, e)
 
-        pagemap[current_link] = {"links": [], "images": []}
+        pagemap[current_link] = {"links": set(), "images": set()}
 
+        # Extract links
         for link in extract_links(content):
             if link is None:
                 continue
 
-            pagemap[current_link]["links"].append(link)
+            # Add links to pagemap
+            pagemap[current_link]["links"].add(link)
 
             # If page belongs to current domain then add it to queue
             if const.STARTING_PAGE in link:
                 queue.append(link)
 
+        # Extract images
         for link in extract_images(content):
             if link is None:
                 continue
-            pagemap[current_link]["images"].append(link)
+
+            # Add image to pagemap
+            pagemap[current_link]["images"].add(link)
 
         # Add page to processed set
         crawled_set.add(current_link)
@@ -144,6 +149,26 @@ def crawl():
                     len(pagemap.get(current_link).get("images")),
                     )
 
+    return pagemap
+
+
+@debug_decorator
+def save_to_markdown(pagemap):
+    with open(const.MARKDOWN_FILENAME, "w+") as savefile:
+        savefile.write("# " + const.STARTING_PAGE + "\n\n")
+
+        for page in sorted(pagemap):
+            savefile.write("## " + page + "\n")
+            savefile.write("### Links:\n\n")
+
+            for link in sorted(pagemap.get(page).get("links")):
+                savefile.write("* " + link.encode('ascii', 'ignore') + "\n")
+
+            savefile.write("\n### Images:\n\n")
+            for image in sorted(pagemap.get(page).get("images")):
+                savefile.write("* " + image.encode('ascii', 'ignore') + "\n")
+            savefile.write("\n")
+
 
 if __name__ == "__main__":
     start_time = datetime.datetime.now()
@@ -151,7 +176,8 @@ if __name__ == "__main__":
     configure_logger(logger)
     logger.info('Script has started')
 
-    crawl()
+    pgmap = crawl()
+    save_to_markdown(pgmap)
 
     logger.info('Script has finished running. Time elapsed: %s', datetime.datetime.now() - start_time)
     logger.info('-' * 80)

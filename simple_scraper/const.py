@@ -1,10 +1,12 @@
 import logging
 
 # STARTING PAGE
-# STARTING_PAGE = u"http://www.dsp.org.pl"
-# STARTING_PAGE = u"http://egnyte.com"
-STARTING_PAGE = u"http://wiprodigital.com"
+STARTING_PAGE = u"http://lcamtuf.coredump.cx/gcnc/"
 
 # Logging constants
-CONSOLE_LOGLEVEL = logging.DEBUG
+CONSOLE_LOGLEVEL = logging.INFO
 LOGGER_NAME = "simple_scraper"
+
+# Output
+OUT_DIRECTORY = "out/"
+MARKDOWN_FILENAME = OUT_DIRECTORY + "pagemap.md"
