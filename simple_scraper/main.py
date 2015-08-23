@@ -8,9 +8,7 @@ import bs4
 
 def configure_logger(log=logging.getLogger('dw')):
     log.setLevel(logging.DEBUG)
-
     formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-
     console_handler = logging.StreamHandler()
     console_handler.setLevel(const.CONSOLE_LOGLEVEL)
     console_handler.setFormatter(formatter)
@@ -18,6 +16,10 @@ def configure_logger(log=logging.getLogger('dw')):
 
 
 def debug_decorator(func):
+    """
+    Small decorator to save on writing the same code over and over again. Useful for debugging.
+    """
+
     @functools.wraps(func)
     def with_logging(*args, **kwargs):
         logger.debug("Starting %r", func.__name__)
@@ -30,6 +32,11 @@ def debug_decorator(func):
 
 @debug_decorator
 def extract_links(content):
+    """
+    Extracts links from page using Beautiful Soup.
+    :param content: HTML string with webpage content
+    :return: list of links
+    """
     soup = bs4.BeautifulSoup(content, 'html.parser')
     logger.debug(soup.title)
     for link in soup.find_all('a'):
@@ -38,12 +45,22 @@ def extract_links(content):
 
 @debug_decorator
 def get_page(url):
+    """
+    Gets the HTTP page using requests.
+    :param url: URL to be fetched
+    :return: Webpage as HTML String
+    """
     r = requests.get(url)
     if r.status_code == requests.codes.ok:
         logger.debug("GET %r successful", url)
         return r.content
     else:
         r.raise_for_status()
+
+
+@debug_decorator
+def crawl():
+    crawled_set = set()  # A set to check whether link has been visited or not
 
 
 if __name__ == "__main__":
