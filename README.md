@@ -8,3 +8,4 @@ Returns a HTML file containing map of internal links within given webpage.
 Libraries required:
 * logging
 * beautifulsoup
+* requests

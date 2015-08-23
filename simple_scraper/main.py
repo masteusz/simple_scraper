@@ -4,6 +4,7 @@ import datetime
 import functools
 import requests
 import bs4
+import sys
 
 
 def configure_logger(log=logging.getLogger('dw')):
@@ -33,14 +34,28 @@ def debug_decorator(func):
 @debug_decorator
 def extract_links(content):
     """
-    Extracts links from page using Beautiful Soup.
+    Generator that extracts links from page using Beautiful Soup.
     :param content: HTML string with webpage content
     :return: list of links
     """
-    soup = bs4.BeautifulSoup(content, 'html.parser')
-    logger.debug(soup.title)
-    for link in soup.find_all('a'):
-        yield clean_link(link.get('href'))
+    if content is not None:
+        soup = bs4.BeautifulSoup(content, 'html.parser')
+        for link in soup.find_all('a'):
+            yield clean_link(link.get('href'))
+
+
+# TODO: Redundant - might be merged with function above
+@debug_decorator
+def extract_images(content):
+    """
+    Generator that extracts images from page using Beautiful Soup.
+    :param content: HTML string with webpage content
+    :return: links to images
+    """
+    if content is not None:
+        soup = bs4.BeautifulSoup(content, 'html.parser')
+        for link in soup.find_all('img', src=True):
+            yield link.get("src")
 
 
 @debug_decorator
@@ -64,19 +79,70 @@ def clean_link(link):
     :param link: String containing link
     :return: String containing absolute link
     """
-    if "http://" in link:
+    if link is None:
+        return None
+    if "mailto" in link:  # Omit maillinks
+        return None
+    if ".pdf" in link or ".doc" in link: # TODO: Delete
+        return None
+    if "#" in link:  # Omit tag links
+        return None
+    if "http://" in link or "https://" in link:
         return link
     else:
+        if not link.startswith("/"):
+            return const.STARTING_PAGE + "/" + link
         return const.STARTING_PAGE + link
 
 
 @debug_decorator
 def crawl():
+    """
+    Crawling pages in BFS manner.
+    :return: Dictionary containing flat pagemap
+    """
     crawled_set = set()  # A set to check whether link has been visited or not
+    pagemap = {}
     queue = [const.STARTING_PAGE]  # Queue for links to be crawled. Simple list because app isn't threaded.
-    pages_count = 0  # Pages crawled
     while len(queue) > 0:
-        pass
+        current_link = queue[0]
+        queue = queue[1:]  # Remove first element from queue
+
+        if current_link in crawled_set:
+            logger.debug("Omitting %r", current_link)
+            continue
+
+        logger.info("Processing %r", current_link)
+        content = None
+        try:
+            content = get_page(current_link)
+        except:  # TODO: Change very broad except clause
+            e = sys.exc_info()[0]
+            logger.error("Error while retrieving page %r: %r", current_link, e)
+
+        pagemap[current_link] = {"links": [], "images": []}
+
+        for link in extract_links(content):
+            if link is None:
+                continue
+
+            pagemap[current_link]["links"].append(link)
+
+            # If page belongs to current domain then add it to queue
+            if const.STARTING_PAGE in link:
+                queue.append(link)
+
+        for link in extract_images(content):
+            if link is None:
+                continue
+            pagemap[current_link]["images"].append(link)
+
+        # Add page to processed set
+        crawled_set.add(current_link)
+        logger.info("Finished processing %r. Links found: %r, images found: %r", current_link,
+                    len(pagemap.get(current_link).get("links")),
+                    len(pagemap.get(current_link).get("images")),
+                    )
 
 
 if __name__ == "__main__":
@@ -84,8 +150,8 @@ if __name__ == "__main__":
     logger = logging.getLogger(const.LOGGER_NAME)
     configure_logger(logger)
     logger.info('Script has started')
-    res = get_page("http://dsp.org.pl")
-    for l in extract_links(res):
-        logger.debug(l)
+
+    crawl()
+
     logger.info('Script has finished running. Time elapsed: %s', datetime.datetime.now() - start_time)
     logger.info('-' * 80)
