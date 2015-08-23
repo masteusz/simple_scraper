@@ -5,7 +5,7 @@ Simple web scraper.
 ## Usage: 
 `python main.py`
 
-Returns a HTML file containing map of internal links within given webpage.
+Returns a Markdown file containing map of internal links within given webpage.
 
 ## Libraries required:
 * beautifulsoup
@@ -13,4 +13,3 @@ Returns a HTML file containing map of internal links within given webpage.
 
 ## TODO:
 * Write TODO
-* Tests

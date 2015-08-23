@@ -20,6 +20,7 @@ def debug_decorator(func):
     """
     Small decorator to save on writing the same code over and over again. Useful for debugging.
     """
+    logger = logging.getLogger(const.LOGGER_NAME)  # Needed for unit testing
 
     @functools.wraps(func)
     def with_logging(*args, **kwargs):
