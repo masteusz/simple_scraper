@@ -1,10 +1,10 @@
 # simple_scraper
-Very simple web scraper using scrapy.
+Simple web scraper.
 
-Usage:
+Usage: python main.py
 
 Returns a HTML file containing map of internal links within given webpage.
 
 Libraries required:
 * logging
-* scrapy
+* beautifulsoup
