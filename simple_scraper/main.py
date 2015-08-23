@@ -40,7 +40,7 @@ def extract_links(content):
     soup = bs4.BeautifulSoup(content, 'html.parser')
     logger.debug(soup.title)
     for link in soup.find_all('a'):
-        logger.debug(link.get('href'))
+        yield clean_link(link.get('href'))
 
 
 @debug_decorator
@@ -58,9 +58,25 @@ def get_page(url):
         r.raise_for_status()
 
 
+def clean_link(link):
+    """
+    (Very) Naive function to create absolute links from relative paths.
+    :param link: String containing link
+    :return: String containing absolute link
+    """
+    if "http://" in link:
+        return link
+    else:
+        return const.STARTING_PAGE + link
+
+
 @debug_decorator
 def crawl():
     crawled_set = set()  # A set to check whether link has been visited or not
+    queue = [const.STARTING_PAGE]  # Queue for links to be crawled. Simple list because app isn't threaded.
+    pages_count = 0  # Pages crawled
+    while len(queue) > 0:
+        pass
 
 
 if __name__ == "__main__":
@@ -69,6 +85,7 @@ if __name__ == "__main__":
     configure_logger(logger)
     logger.info('Script has started')
     res = get_page("http://dsp.org.pl")
-    extract_links(res)
+    for l in extract_links(res):
+        logger.debug(l)
     logger.info('Script has finished running. Time elapsed: %s', datetime.datetime.now() - start_time)
     logger.info('-' * 80)
