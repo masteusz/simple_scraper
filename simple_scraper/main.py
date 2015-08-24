@@ -74,7 +74,7 @@ def get_page(url):
         r.raise_for_status()
 
 
-def clean_link(link):
+def clean_link(link, absolute_path=const.STARTING_PAGE):
     """
     (Very) Naive function to create absolute links from relative paths.
     :param link: String containing link
@@ -95,8 +95,8 @@ def clean_link(link):
         return link
     else:
         if link.startswith("/"):
-            return const.STARTING_PAGE + link.lstrip("/")
-        return const.STARTING_PAGE + link
+            return absolute_path + link.lstrip("/")
+        return absolute_path + link
 
 
 @debug_decorator

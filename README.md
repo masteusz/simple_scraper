@@ -19,3 +19,4 @@ Returns a Markdown file containing map of internal links within given webpage.
 * Change queue mechanism from list to something thread-safe
 * Implement concurrency
 * Add other output possibilities
+* Increase test coverage
